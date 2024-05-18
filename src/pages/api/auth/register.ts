@@ -8,7 +8,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const isSomeWithSameEmail = (await db.select().from(User).where(eq(User.email, body.email)))[0]
     if (isSomeWithSameEmail) {
-        return new Response(null, {
+        return new Response("El correo electrónico ya está en uso.", {
             status: 400,
             statusText: "El correo electrónico ya está en uso.",
         })
