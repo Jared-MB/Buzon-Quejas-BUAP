@@ -7,5 +7,6 @@ export const UserRegisterValidator = z.object({
     phone: z.string().min(10).max(13),
     career: z.string().min(3),
     email: z.string().endsWith('.buap.mx', 'El correo electrónico debe un correo institucional').email(),
-    password: z.string().min(6)
+    password: z.string().min(6),
+    username: z.string().min(3),
 })
