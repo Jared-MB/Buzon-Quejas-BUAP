@@ -96,6 +96,8 @@ import { Shield } from "lucide-react";
         form.addEventListener("submit", async function (event) {
             event.preventDefault();
 
+            const id = toast.loading("Registrando usuario");
+
             const formData = new FormData(form);
 
             const payload = Object.fromEntries(formData.entries());
@@ -127,6 +129,9 @@ import { Shield } from "lucide-react";
                         errorFormFields.push(key);
                     },
                 );
+                toast.error("Por favor, revisa los campos del formulario", {
+                    id,
+                });
                 return;
             }
 
@@ -147,7 +152,9 @@ import { Shield } from "lucide-react";
                 return;
             }
 
-            toast.success("Usuario registrado correctamente");
+            toast.success("Usuario registrado correctamente", {
+                id,
+            });
             setTimeout(() => {
                 window.location.href = "/login";
             }, 2000);

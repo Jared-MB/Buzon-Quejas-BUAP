@@ -67,6 +67,7 @@ if (session) {
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+            const id = toast.loading("Iniciando sesión...");
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
             const response = await signIn("credentials", {
@@ -74,8 +75,14 @@ if (session) {
                 password: data.password,
             });
             if (response) {
-                toast.error("Usuario o contraseña incorrectos");
+                toast.error("Usuario o contraseña incorrectos", {
+                    id,
+                });
+                return;
             }
+            toast.success("¡Bienvenido!", {
+                id,
+            });
         });
     }
 </script>
