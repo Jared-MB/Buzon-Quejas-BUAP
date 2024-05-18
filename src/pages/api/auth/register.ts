@@ -17,10 +17,21 @@ export const POST: APIRoute = async ({ request }) => {
     const id = crypto.randomUUID()
     const password = await bcrypt.hash(body.password, 10)
 
-    await db.insert(User).values([{
-        ...body,
-        password,
-        id,
-    }])
+    console.log({ id, body })
+
+    try {
+        await db.insert(User).values([{
+            ...body,
+            password,
+            id,
+        }])
+    }
+    catch (error) {
+        console.error(error)
+        return new Response("Error al registrar el usuario.", {
+            status: 500,
+            statusText: "Error al registrar el usuario.",
+        })
+    }
     return new Response('Usuario registrado correctamente', { status: 201 })
 }
