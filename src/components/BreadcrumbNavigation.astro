@@ -1,0 +1,39 @@
+---
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
+import { Routes } from "@/constants/routes";
+
+const url = new URL(Astro.url);
+const path = url.pathname.split("/");
+---
+
+<Breadcrumb>
+    <BreadcrumbList>
+        {
+            path.map((item, index) => {
+                if (item === "") {
+                    return null;
+                }
+
+                const href = path.slice(0, index + 1).join("/");
+                const isLast = index === path.length - 1;
+
+                return (
+                    <BreadcrumbItem key={index}>
+                        <BreadcrumbLink href={href}>
+                            {(Routes as any)[item as any] ?? item}
+                        </BreadcrumbLink>
+                        {!isLast && <BreadcrumbSeparator />}
+                    </BreadcrumbItem>
+                );
+            })
+        }
+    </BreadcrumbList>
+</Breadcrumb>
