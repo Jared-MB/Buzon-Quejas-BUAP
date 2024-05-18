@@ -6,8 +6,8 @@ export const ComplaintValidator = z.object({
     status: z.enum(['pending', 'inProgress', 'resolved']),
     userId: z.string().uuid(),
     id: z.string().uuid(),
-    updatedAt: z.date(),
-    createdAt: z.date(),
+    updatedAt: z.date().optional(),
+    createdAt: z.date().optional(),
     at: z.date().optional(),
     location: z.string().optional()
 })
