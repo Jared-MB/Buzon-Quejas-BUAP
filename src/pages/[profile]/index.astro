@@ -1,0 +1,23 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { db, User, eq } from "astro:db";
+import { getSession } from "auth-astro/server";
+
+const session = await getSession(Astro.request);
+
+if (!session || !session.user) {
+    return Astro.redirect("/login");
+}
+
+const user = (
+    await db
+        .select()
+        .from(User)
+        .where(eq(User.email, session.user.email ?? ""))
+)[0];
+if (!user) {
+    return Astro.redirect("/login");
+}
+---
+
+<Layout title={`${user.username} | BUAP`}> Mi perfil </Layout>
