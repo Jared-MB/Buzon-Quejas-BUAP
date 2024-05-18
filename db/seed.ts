@@ -1,6 +1,6 @@
 import { db, User, Complaint } from 'astro:db';
 import { randomUUID } from 'node:crypto'
-import * as bcrypt from 'bcryptjs'
+import * as bcrypt from 'bcrypt'
 
 import { loadEnv } from "vite";
 const { SEED_NAME,
