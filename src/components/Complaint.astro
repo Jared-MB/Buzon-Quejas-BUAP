@@ -1,0 +1,53 @@
+---
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import Divider from "@/components/ui/Divider.astro";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardFooter,
+} from "@/components/ui/card";
+import { CardBody } from "@/components/ui/card";
+
+import { ComplaintStatus } from "@/constants/status";
+
+import { type Complaint } from "@/validators/complaint.validator";
+import Link from "./ui/Link.astro";
+
+interface Props {
+    complaint: Complaint;
+}
+
+const { complaint } = Astro.props;
+
+let badgeVariant = "default" as "default" | "outline" | "secondary";
+if (complaint.status === "pending") {
+    badgeVariant = "outline";
+} else if (complaint.status === "inProgress") {
+    badgeVariant = "secondary";
+}
+---
+
+<Card>
+    <CardHeader>
+        <CardTitle>{complaint.title}</CardTitle>
+        <CardDescription>
+            Ultima actualización: {complaint.updatedAt}
+        </CardDescription>
+        <Badge className="top-4 right-4 absolute" variant={badgeVariant}>
+            {ComplaintStatus[complaint.status as keyof typeof ComplaintStatus]}
+        </Badge>
+    </CardHeader>
+    <Divider />
+    <CardBody>
+        <p>{complaint.description}</p>
+    </CardBody>
+    <CardFooter className="justify-between">
+        <CardDescription>
+            Creado: {complaint.createdAt}
+        </CardDescription>
+        <Link href={`/complaints/${complaint.id}`}> Ver más </Link>
+    </CardFooter>
+</Card>

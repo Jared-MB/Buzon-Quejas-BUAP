@@ -1,0 +1,17 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { eq } from "astro:db";
+import { Complaint } from "astro:db";
+import { db } from "astro:db";
+
+const { id } = Astro.params;
+
+const complaint = (await db.select().from(Complaint).where(eq(Complaint.id, id ?? '')))[0]
+---
+
+<Layout title={`${complaint.title} | BUAP`}>
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold mt-8 mb-4">{complaint.title}</h1>
+        <p class="text-lg mb-4">{complaint.description}</p>
+    </div>
+</Layout>

@@ -1,0 +1,17 @@
+---
+import { buttonVariants } from "./button";
+
+interface Props {
+    href: string;
+    styledAsButton?: boolean;
+    variant?: "default" | "secondary" | "outline" | "link";
+}
+
+const { href, styledAsButton = false, variant } = Astro.props;
+
+const className = buttonVariants({
+    variant: styledAsButton ? (variant ? variant : "outline") : "link",
+});
+---
+
+<a href={href} class={className}><slot /></a>

@@ -1,0 +1,81 @@
+---
+import { Button } from "@/components/ui/button";
+import { CardBody, CardFooter } from "@/components/ui/card";
+import { Input, InputContainer } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import { getSession } from "auth-astro/server";
+import { Shield } from "lucide-react";
+
+const session = await getSession(Astro.request);
+
+if (session) {
+    return Astro.redirect("/");
+}
+---
+
+<AuthLayout>
+    <h2
+        class="text-3xl p-6 pb-4 font-medium flex flex-row gap-x-2 items-center"
+    >
+        <Shield className="text-purple-500 w-12 h-12" />¡Bienvenido de vuelta!
+    </h2>
+    <CardBody>
+        <InputContainer>
+            <Label>Correo electrónico</Label>
+            <Input
+                type="email"
+                name="email"
+                placeholder="correo@alumno.buap.mx"
+            />
+        </InputContainer>
+        <InputContainer>
+            <Label>Contraseña</Label>
+            <Input
+                type="password"
+                name="password"
+                placeholder="* * * * * * * *"
+            />
+        </InputContainer>
+    </CardBody>
+    <CardFooter className="justify-end">
+        <Button type="submit">Iniciar Sesión</Button>
+    </CardFooter>
+</AuthLayout>
+
+<script>
+    import { $ } from "@/lib/dom";
+    import { toast } from "sonner";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchParams = new URLSearchParams(location.search);
+        const error = searchParams.get("error");
+        console.log(error);
+        if (error) {
+            setTimeout(() => {
+                toast.error("Usuario o contraseña incorrectos", {
+                    position: "top-right",
+                });
+            }, 100);
+        }
+    });
+
+    const { signIn } = await import("auth-astro/client");
+
+    const form = $("form") as HTMLFormElement | null;
+
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const response = await signIn("credentials", {
+                email: data.email,
+                password: data.password,
+            });
+            if (response) {
+                toast.error("Usuario o contraseña incorrectos");
+            }
+        });
+    }
+</script>

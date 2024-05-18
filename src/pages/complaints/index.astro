@@ -1,0 +1,45 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+import { db, Complaint, desc } from "astro:db";
+import ComplaintCard from "@/components/Complaint.astro";
+
+import { getSession } from "auth-astro/server";
+import Link from "@/components/ui/Link.astro";
+
+const session = await getSession(Astro.request);
+
+const complaints = await db
+    .select()
+    .from(Complaint)
+    .limit(10)
+    .orderBy(desc(Complaint.createdAt));
+---
+
+<Layout title="Quejas | BUAP">
+    <main class="max-w-6xl mx-auto py-8">
+        <header class="flex flex-row justify-between items-center mb-4">
+            <h2 class="text-2xl font-medium">Quejas</h2>
+            <div class="flex flex-row gap-x-4 items-center">
+                {
+                    session && (
+                        <Link
+                            href="/complaints/upload"
+                            styledAsButton
+                            variant="default"
+                        >
+                            Hacer una queja
+                        </Link>
+                    )
+                }
+            </div>
+        </header>
+        <div class="flex flex-col gap-y-4">
+            {
+                complaints.map((complaint) => (
+                    <ComplaintCard complaint={complaint as any} />
+                ))
+            }
+        </div>
+    </main>
+</Layout>

@@ -1,0 +1,45 @@
+---
+import "@fontsource-variable/quicksand";
+import "@/styles/globals.css";
+import { Toaster } from "@/components/ui/sonner";
+
+import Nav from "@/components/layout/Nav.astro";
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<header
+			class="shadow flex flex-row items-center justify-between h-16 px-8 sticky top-0 w-full z-50 bg-white"
+		>
+			<h1 class="text-2xl text-purple-500">
+				<a href="/">Buzón de Quejas | BUAP</a>
+			</h1>
+			<Nav />
+		</header>
+		<div class="relative min-h-[calc(100dvh-4rem)] overflow-y-auto">
+			<slot />
+		</div>
+		<Toaster client:idle />
+	</body>
+</html>
+
+<style is:global>
+	body {
+		font-family: "Quicksand Variable", sans-serif;
+	}
+</style>

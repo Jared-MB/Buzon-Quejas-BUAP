@@ -1,0 +1,29 @@
+---
+import { getSession } from "auth-astro/server";
+import Settings from "./settings";
+import Link from "../ui/Link.astro";
+
+import { db, User, eq } from 'astro:db'
+
+const session = await getSession(Astro.request);
+
+let username = ''
+
+if (session){
+    const user = (await db.select({username: User.username}).from(User).where(eq(User.email, session.user?.email ?? '')))[0]
+    username = user.username
+}
+---
+
+{
+    !session ? (
+        <nav class="flex flex-row items-center gap-x-4">
+            <a href="/login">Iniciar Sesión</a>
+            <Link href="/register" styledAsButton variant="default">
+                Registrarse
+            </Link>
+        </nav>
+    ) : (
+        <Settings client:idle username={username} />
+    )
+}

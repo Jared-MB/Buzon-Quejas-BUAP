@@ -1,0 +1,156 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Card, CardBody, CardFooter } from "@/components/ui/card";
+
+import { Input, InputContainer, InputError } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import Link from "@/components/ui/Link.astro";
+import AuthLayout from "@/layouts/AuthLayout.astro";
+import { Shield } from "lucide-react";
+---
+
+<AuthLayout>
+    <h2
+        class="text-3xl p-6 pb-4 font-medium flex flex-row gap-x-2 items-center"
+    >
+        <Shield className="text-purple-500 w-12 h-12" />¡Bienvenido!
+    </h2>
+    <CardBody>
+        <InputContainer>
+            <Label>Nombre</Label>
+            <Input name="name" placeholder="Jared" />
+            <InputError id="name" />
+        </InputContainer>
+        <InputContainer>
+            <Label>Apellido</Label>
+            <Input name="lastName" placeholder="Muñoz" />
+            <InputError id="lastName" />
+        </InputContainer>
+        <div class="flex flex-row items-start gap-x-4">
+            <InputContainer>
+                <Label>Matrícula</Label>
+                <Input name="matricula" type="number" placeholder="202178172" />
+                <InputError id="matricula" />
+            </InputContainer>
+            <InputContainer>
+                <Label>Teléfono</Label>
+                <Input name="phone" placeholder="222 198 37 90" />
+                <InputError id="phone" />
+            </InputContainer>
+        </div>
+        <InputContainer>
+            <Label>Carrera</Label>
+            <Input
+                name="career"
+                placeholder="Ingeniería en Tecnologías de la Información"
+            />
+            <InputError id="career" />
+        </InputContainer>
+        <InputContainer>
+            <Label>Correo</Label>
+            <Input name="email" placeholder="correo@alumno.buap.mx" />
+            <InputError id="email" />
+        </InputContainer>
+        <div class="flex flex-row items-start gap-x-4">
+            <InputContainer>
+                <Label>Contraseña</Label>
+                <Input
+                    name="password"
+                    type="password"
+                    placeholder="* * * * * * * *"
+                />
+                <InputError id="password" />
+            </InputContainer>
+            <InputContainer>
+                <Label>Confirmar contraseña</Label>
+                <Input
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="* * * * * * * *"
+                />
+                <InputError id="confirmPassword" />
+            </InputContainer>
+        </div>
+    </CardBody>
+    <CardFooter className="justify-end gap-x-4">
+        <Link styledAsButton href="/">Cancelar</Link>
+        <Button type="submit">Registrarse</Button>
+    </CardFooter>
+</AuthLayout>
+
+<script>
+    import { UserRegisterValidator } from "@/validators/user.validator";
+    import { $ } from "@/lib/dom";
+    import { toast } from "sonner";
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+
+        if (!form) {
+            return;
+        }
+
+        const errorFormFields = [] as string[];
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+
+            const payload = Object.fromEntries(formData.entries());
+            const parsedData = UserRegisterValidator.safeParse(payload);
+
+            const isSamePassword = payload.password === payload.confirmPassword;
+
+            errorFormFields.forEach((field) => {
+                const $error = $(`[id="${field}"]`) as HTMLDivElement;
+                $error.classList.add("hidden");
+                $error.innerText = "";
+            });
+
+            if (!isSamePassword) {
+                const $passwordError = $(
+                    '[id="confirmPassword"]',
+                ) as HTMLDivElement;
+                $passwordError.innerText = "Las contraseñas no coinciden";
+                $passwordError.classList.remove("hidden");
+                errorFormFields.push("confirmPassword");
+            }
+
+            if (!parsedData.success) {
+                Object.entries(parsedData.error.flatten().fieldErrors).forEach(
+                    ([key, value]) => {
+                        const $error = $(`[id="${key}"]`) as HTMLDivElement;
+                        $error.innerText = value[0];
+                        $error.classList.remove("hidden");
+                        errorFormFields.push(key);
+                    },
+                );
+                return;
+            }
+
+            const response = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(parsedData.data),
+            });
+
+            if (!response.ok) {
+                if (response.status === 409) {
+                    toast.error("El correo ya está registrado");
+                    return;
+                }
+                toast.error(response.statusText);
+                return;
+            }
+
+            toast.success("Usuario registrado correctamente");
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2000);
+        });
+    });
+</script>
