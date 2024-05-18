@@ -1,0 +1,20 @@
+---
+import { Card } from "@/components/ui/card";
+import Layout from "./Layout.astro";
+
+interface Props {
+    title?: string;
+}
+
+const { title } = Astro.props;
+---
+
+<Layout title={title ?? "Buzón de quejas | BUAP"}>
+    <main class="flex justify-center h-full relative z-0">
+        <form class="w-2/5 my-16 h-fit">
+            <Card>
+                <slot />
+            </Card>
+        </form>
+    </main>
+</Layout>
