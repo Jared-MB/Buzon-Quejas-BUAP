@@ -4,11 +4,14 @@ import { User } from 'lucide-react'
 import { signOut } from 'auth-astro/client'
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback } from '../ui/avatar'
+import { toast } from 'sonner'
 
 export default function Settings({ username }: { username: string }) {
 
   const logout = async () => {
+    const id = toast.loading('Cerrando sesión')
     await signOut()
+    toast.success('Sesión cerrada', { id })
     window.location.href = '/'
   }
 
