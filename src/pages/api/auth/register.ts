@@ -18,15 +18,10 @@ export const POST: APIRoute = async ({ request }) => {
     const id = randomUUID()
     const password = await bcrypt.hash(body.password, 10)
 
-    const savedUser = (await db.insert(User).values([{
+    await db.insert(User).values([{
         ...body,
         password,
         id,
-    }]).returning({
-        id: User.id,
-        email: User.email,
-        name: User.name,
-    }))[0]
-
-    return new Response(JSON.stringify(savedUser), { status: 201 })
+    }])
+    return new Response('Usuario registrado correctamente', { status: 201 })
 }
