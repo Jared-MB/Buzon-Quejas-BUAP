@@ -27,6 +27,11 @@ import { Shield } from "lucide-react";
             <Input name="lastName" placeholder="Muñoz" />
             <InputError id="lastName" />
         </InputContainer>
+        <InputContainer>
+            <Label>Usuario</Label>
+            <Input name="username" placeholder="usuario" />
+            <InputError id="username" />
+        </InputContainer>
         <div class="flex flex-row items-start gap-x-4">
             <InputContainer>
                 <Label>Matrícula</Label>
@@ -144,20 +149,22 @@ import { Shield } from "lucide-react";
             });
 
             if (!response.ok) {
-                if (response.status === 409) {
-                    toast.error("El correo ya está registrado");
+                if (response.status === 400) {
+                    toast.error("El correo ya está registrado", {
+                        id,
+                    });
                     return;
                 }
-                toast.error(response.statusText);
+                toast.error(response.statusText, {
+                    id,
+                });
                 return;
             }
 
             toast.success("Usuario registrado correctamente", {
                 id,
             });
-            setTimeout(() => {
-                window.location.href = "/login";
-            }, 2000);
+            window.location.href = "/login";
         });
     });
 </script>
