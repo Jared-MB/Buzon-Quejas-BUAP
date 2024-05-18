@@ -2,7 +2,7 @@ import Credentials from '@auth/core/providers/credentials';
 import { defineConfig } from 'auth-astro';
 import { db, eq, User } from 'astro:db'
 
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 
 export default defineConfig({
     providers: [

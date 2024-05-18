@@ -1,7 +1,6 @@
 import type { APIRoute } from "astro";
 import { db, User, eq } from "astro:db";
-import * as bcrypt from "bcrypt";
-import { randomUUID } from "node:crypto";
+import * as bcrypt from "bcryptjs";
 
 export const POST: APIRoute = async ({ request }) => {
 
@@ -15,7 +14,7 @@ export const POST: APIRoute = async ({ request }) => {
         })
     }
 
-    const id = randomUUID()
+    const id = crypto.randomUUID()
     const password = await bcrypt.hash(body.password, 10)
 
     await db.insert(User).values([{
